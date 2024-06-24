@@ -7,7 +7,7 @@ import Register from "./Components/pages/Register";
 import axios from "axios";
 import IndexPage from "./Components/pages/IndexPage";
 
-axios.defaults.baseURL = "http://localhost:4000";
+axios.defaults.baseURL = "http://localhost:3000";
 function app() {
   return (
     <Routes>

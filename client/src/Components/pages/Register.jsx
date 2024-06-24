@@ -8,11 +8,16 @@ const Register = () => {
   const [password, setPassword] = useState("");
   async function registerUser(ev) {
     ev.preventDefault();
-    await axios.post("http://localhost:4000/register", {
-      name,
-      email,
-      password,
-    });
+    try {
+      await axios.post("/register", {
+        name,
+        email,
+        password,
+      });
+      alert("Registration Successful");
+    } catch (e) {
+      alert("Registration failed please try again later");
+    }
   }
   return (
     <div className="p-4 py-6 grow flex items-center justify-around">
