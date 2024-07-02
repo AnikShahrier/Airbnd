@@ -1,9 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const app = express();
 app.use(
   cors({
+    credentials: true,
     origin: "http://localhost:5173",
   })
 );
@@ -13,6 +15,7 @@ const User = require("./models/User.js");
 require("dotenv").config();
 
 const secret = bcrypt.genSaltSync(10);
+const jwtSecret = "asfsatwt5498ferewgfwv64s6d14gsd";
 
 app.use(express.json());
 
@@ -40,7 +43,20 @@ app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (user) {
-    res.json("found");
+    const passOk = bcrypt.compareSync(password, user.password);
+    if (passOk) {
+      jwt.sign(
+        { email: user.email, id: user._id },
+        jwtSecret,
+        {},
+        (err, token) => {
+          if (err) throw err;
+          res.cookie("token", token).json(user);
+        }
+      );
+    } else {
+      res.status(422).json("Pass not okay");
+    }
   } else {
     res.json("not found");
   }

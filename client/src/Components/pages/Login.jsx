@@ -1,19 +1,27 @@
 import axios from "axios";
 import React from "react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { UserContext } from "../../UserContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [redirect, setRedirect] = useState(false);
+  const { setUser } = useContext(UserContext);
   async function handleLoginSubmit(ev) {
     ev.preventDefault();
     try {
-      await axios.post("/login", { email, password });
+      const { data } = await axios.post("/login", { email, password });
+      setUser(data);
       alert("Login Successful");
+      setRedirect(true);
     } catch (e) {
       alert("Login Failed. Please try again.");
     }
+  }
+  if (redirect) {
+    return <Navigate to={"/"} />;
   }
   return (
     <div className="p-4 py-6 grow flex items-center justify-around">
