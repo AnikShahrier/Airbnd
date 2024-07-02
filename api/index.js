@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
 const app = express();
 app.use(
   cors({
@@ -18,6 +19,7 @@ const secret = bcrypt.genSaltSync(10);
 const jwtSecret = "asfsatwt5498ferewgfwv64s6d14gsd";
 
 app.use(express.json());
+app.use(cookieParser());
 
 mongoose.connect(process.env.Mongoose_URL);
 
@@ -59,6 +61,19 @@ app.post("/login", async (req, res) => {
     }
   } else {
     res.json("not found");
+  }
+});
+
+app.get("/profile", (req, res) => {
+  const { token } = req.cookies;
+  if (token) {
+    jwt.verify(token, jwtSecret, {}, async (err, userInfo) => {
+      if (err) throw err;
+      const { name, email, _id } = await User.findById(userInfo.id);
+      res.json({ name, email, _id });
+    });
+  } else {
+    res.json(null);
   }
 });
 

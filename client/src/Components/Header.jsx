@@ -52,7 +52,7 @@ const Header = () => {
             clipRule="evenodd"
           />
         </svg>
-        <div className="flex gap-2">
+        <div className="flex items-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -65,7 +65,10 @@ const Header = () => {
               clipRule="evenodd"
             />
           </svg>
-          {!!user && <div>{user.name}</div>}
+
+          {!!user && (
+            <div className="ml-2 text-pretty text-bold">{user.name}</div>
+          )}
         </div>
       </Link>
     </div>
