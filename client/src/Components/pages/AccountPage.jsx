@@ -1,13 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "../../UserContext";
 import { Link, Navigate, useParams } from "react-router-dom";
 import BookingsPage from "./BookingsPage";
 import PlacesPage from "./PlacesPage";
+import axios from "axios";
 
 const AccountPage = () => {
-  const { ready, user } = useContext(UserContext);
+  const { ready, user, setUser } = useContext(UserContext);
   let { subpage } = useParams();
+  const [redirect, setredirect] = useState(null);
+  async function logout() {
+    try {
+      await axios.post("/logout");
+
+      setredirect("/");
+      setUser(null);
+    } catch (error) {
+      console.error(
+        "Error logging out:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
   if (subpage === undefined) {
     subpage = "profile";
   }
@@ -15,7 +30,7 @@ const AccountPage = () => {
   if (!ready) {
     return "Loading....";
   }
-  if (ready && !user) {
+  if (ready && !user && !redirect) {
     return <Navigate to={"/login"} />;
   }
 
@@ -38,9 +53,12 @@ const AccountPage = () => {
     }
     return classes;
   }
+  if (redirect) {
+    return <Navigate to={redirect} />;
+  }
   return (
     <div className="p-4 ">
-      <nav className="w-full flex justify-center mt-10 gap-2">
+      <nav className="w-full flex justify-center mt-10 gap-2 mb-8">
         <Link className={linkClasses("profile")} to={"/account"}>
           My profile
         </Link>
@@ -51,6 +69,18 @@ const AccountPage = () => {
           My Accommodations
         </Link>
       </nav>
+      {subpage === "profile" && (
+        <div className="text-center p-4 max-w-lg mx-auto">
+          Logged in as {user.name} ({user.email}) <br />
+          <button
+            onClick={logout}
+            className="bg-black text-white primary border-2 border-black rounded-2xl py-2 px-3 my-4 w-full
+         shadow-gray-300 hover:scale-x-90 shadow-lg transition duration-300 ease-in-out"
+          >
+            log out
+          </button>
+        </div>
+      )}
       <div>{renderSubpage()}</div>
     </div>
   );
