@@ -37,7 +37,7 @@ const Header = () => {
         </button>
       </div>
       <Link
-        to={"/login"}
+        to={user ? "/account" : "/login"}
         className="mt-4 mr-4 flex items-center gap-2 box-border border-2  rounded-full py-2  px-3 shadow-md shadow-gray-300 hover:shadow-xl transition duration-300 ease-in-out"
       >
         <svg
