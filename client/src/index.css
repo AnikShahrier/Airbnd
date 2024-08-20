@@ -5,5 +5,9 @@
 input[type="text"],
 input[type="password"],
 input[type="email"] {
-  @apply w-full border my-1 py-2 px-3 rounded-2xl hover:scale-x-110 transition duration-300 ease-in-out focus:border-black focus:outline-none;
+  @apply w-full border my-1 py-2 px-3 rounded-2xl hover:scale-x-105 transition duration-300 ease-in-out focus:border-black focus:outline-none;
+}
+
+.no-animation-input {
+  @apply hover:scale-x-100 transition-none;
 }
