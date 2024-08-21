@@ -44,6 +44,27 @@ const PlacesPage = () => {
     setPhotoLink("");
   }
 
+  function uploadPhoto(ev) {
+    const files = ev.target.files;
+    const data = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+      data.append("photos", files[i]);
+    }
+
+    axios
+      .post("/upload", data, {
+        headers: { "Content-type": "multipart/form-data" },
+      })
+      .then((response) => {
+        const uploadedPhotos = response.data.map((file) => file.filename); // Extract filenames
+        setaddedPhotos((prev) => [...prev, ...uploadedPhotos]);
+      })
+      .catch((error) => {
+        console.error("Upload failed:", error);
+      });
+  }
+
   return (
     <div className="p-2">
       {action !== "new" && (
@@ -117,7 +138,13 @@ const PlacesPage = () => {
                     />
                   </div>
                 ))}
-              <button className="border bg-transparent rounded-2xl p-8 flex items-center justify-center gap-1">
+              <label className=" cursor-pointer border bg-transparent rounded-2xl p-8 flex items-center justify-center gap-1">
+                <input
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={uploadPhoto}
+                />
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -133,7 +160,7 @@ const PlacesPage = () => {
                   />
                 </svg>
                 Upload
-              </button>
+              </label>
             </div>
             {preInput("Description", "tell us about your place")}
             <textarea

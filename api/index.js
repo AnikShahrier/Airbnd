@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const imageDownloader = require("image-downloader");
+const multer = require("multer");
+const fs = require("fs");
 
 const app = express();
 app.use(
@@ -93,6 +95,39 @@ app.post("/upload-by-link", async (req, res) => {
     dest: __dirname + "/uploads/" + newName,
   });
   res.json(newName);
+});
+
+const photosMiddleWare = multer({ dest: "uploads/" });
+// app.post("/upload", photosMiddleWare.array("photos", 100), (req, res) => {
+//   const uploadedFiles = [];
+//   for (let i = 0; i < req.files.length; i++) {
+//     const { path, originalname } = req.files[i];
+//     const parts = originalname.split(".");
+//     const ext = parts[parts.length - 1];
+//     const newPath = path + "." + ext;
+//     fs.renameSync(path, newPath);
+//     uploadedFiles.push(newPath.replace("uploads/", ""));
+//   }
+//   res.json(uploadedFiles);
+// });
+app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
+  const uploadedFiles = [];
+
+  try {
+    for (let i = 0; i < req.files.length; i++) {
+      const { path, originalname } = req.files[i];
+      const parts = originalname.split(".");
+      const ext = parts[parts.length - 1];
+      const newPath = `${path}.${ext}`;
+
+      fs.renameSync(path, newPath); // Renaming the file with the extension
+      uploadedFiles.push(newPath.replace("uploads/", ""));
+    }
+    res.json(uploadedFiles); // Send back the list of uploaded filenames
+  } catch (error) {
+    console.error("File upload error:", error);
+    res.status(500).send("File upload failed.");
+  }
 });
 
 app.listen(3000);
