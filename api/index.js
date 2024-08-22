@@ -110,15 +110,12 @@ app.post("/upload", photosMiddleWare.array("photos", 100), (req, res) => {
       const ext = parts[parts.length - 1];
       const newPath = path + "." + ext;
 
-      // Renaming the file to include the correct extension
       fs.renameSync(path, newPath);
 
-      // Replace backslashes with forward slashes for consistency
       const formattedPath = newPath.replace(/\\/g, "/");
       uploadedFiles.push(formattedPath.replace("uploads/", ""));
     }
 
-    // Responding with the list of uploaded files
     res.json(uploadedFiles);
   } catch (err) {
     console.error("Error during file upload:", err);
