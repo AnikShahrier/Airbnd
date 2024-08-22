@@ -93,24 +93,14 @@ app.post("/upload-by-link", async (req, res) => {
   await imageDownloader.image({
     url: link,
     dest: __dirname + "/uploads/" + newName,
+    timeout: 60000,
   });
   res.json(newName);
 });
 
 const photosMiddleWare = multer({ dest: "uploads/" });
-// app.post("/upload", photosMiddleWare.array("photos", 100), (req, res) => {
-//   const uploadedFiles = [];
-//   for (let i = 0; i < req.files.length; i++) {
-//     const { path, originalname } = req.files[i];
-//     const parts = originalname.split(".");
-//     const ext = parts[parts.length - 1];
-//     const newPath = path + "." + ext;
-//     fs.renameSync(path, newPath);
-//     uploadedFiles.push(newPath.replace("uploads/", ""));
-//   }
-//   res.json(uploadedFiles);
-// });
-app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
+
+app.post("/upload", photosMiddleWare.array("photos", 100), (req, res) => {
   const uploadedFiles = [];
 
   try {
@@ -118,15 +108,21 @@ app.post("/upload", photosMiddleware.array("photos", 100), (req, res) => {
       const { path, originalname } = req.files[i];
       const parts = originalname.split(".");
       const ext = parts[parts.length - 1];
-      const newPath = `${path}.${ext}`;
+      const newPath = path + "." + ext;
 
-      fs.renameSync(path, newPath); // Renaming the file with the extension
-      uploadedFiles.push(newPath.replace("uploads/", ""));
+      // Renaming the file to include the correct extension
+      fs.renameSync(path, newPath);
+
+      // Replace backslashes with forward slashes for consistency
+      const formattedPath = newPath.replace(/\\/g, "/");
+      uploadedFiles.push(formattedPath.replace("uploads/", ""));
     }
-    res.json(uploadedFiles); // Send back the list of uploaded filenames
-  } catch (error) {
-    console.error("File upload error:", error);
-    res.status(500).send("File upload failed.");
+
+    // Responding with the list of uploaded files
+    res.json(uploadedFiles);
+  } catch (err) {
+    console.error("Error during file upload:", err);
+    res.status(500).json({ error: "File upload failed" });
   }
 });
 
