@@ -1,10 +1,18 @@
 import React from "react";
 
 const Pearks = ({ selected, onChange }) => {
+  function handleCbClick(ev) {
+    const { checked, name } = ev.target;
+    if (checked) {
+      onchange([...selected, name]);
+    } else {
+      onchange([...selected.filter((selectedName) => selectedName !== name)]);
+    }
+  }
   return (
     <div className="mt-2 gap-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" />
+        <input type="checkbox" name="wifi" onchange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -23,7 +31,7 @@ const Pearks = ({ selected, onChange }) => {
         <span>Wifi</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" />
+        <input type="checkbox" name="tv" onchange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -42,7 +50,11 @@ const Pearks = ({ selected, onChange }) => {
         <span>TV</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" />
+        <input
+          type="checkbox"
+          name="prepaid_electricity"
+          onchange={handleCbClick}
+        />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -61,7 +73,7 @@ const Pearks = ({ selected, onChange }) => {
         <span>Prepaid Electricity</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" />
+        <input type="checkbox" name="ac" onchange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -80,7 +92,7 @@ const Pearks = ({ selected, onChange }) => {
         <span>AC</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" />
+        <input type="checkbox" name="baranda" onchange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -99,7 +111,7 @@ const Pearks = ({ selected, onChange }) => {
         <span>South Faced Baranda</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" />
+        <input type="checkbox" name="parking_space" onchange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -118,7 +130,7 @@ const Pearks = ({ selected, onChange }) => {
         <span>Parking Space</span>
       </label>
       <label className="border p-4 flex rounded-2xl gap-2 items-center">
-        <input type="checkbox" />
+        <input type="checkbox" name="geyser" onchange={handleCbClick} />
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
